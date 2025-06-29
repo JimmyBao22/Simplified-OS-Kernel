@@ -2,20 +2,25 @@
 
 This project creates an extension of an operating system focusing on expanding user-level capabilities and kernel features. This is supposed to be a simplified version of an OS kernel, which still holds a lot of the functionalities like system calls, preemption, inter-process communication, virtual memory, signal handling, etc.
 
-## Physical address Space:
+## Physical Address Space
 
-0x00000000 - kConfig.memSize  (DRAM)
-kConfig.ioAPIC - ...+0x000    (the IOPIC device)
-kConfig.localAPIC - ...+0x000 (the LAPIC device)
+| Address Range                   | Description         |
+|---------------------------------|---------------------|
+| 0x00000000 - kConfig.memSize    | DRAM                |
+| kConfig.ioAPIC - ... + 0x000    | the IOPIC device    |
+| kConfig.localAPIC - ... + 0x000 | the LAPIC device    |
 
-## Virtual Address Space:
 
-0x00001000 - kConfig.memSize   (identity mapped kernel RW)
-0x80000000 - 0xF0000000        (per-process, on demand, user RW)
-0xF0000000 - 0xF0001000        (shared between all user processes)
-kConfig.ioAPIC - ...+0x1000    (identity mapped kernel RW)
-kConfig.localAPIC - ...+0x1000 (identity mapped kernel RW)
-everything else                (no valid mapping)
+## Virtual Address Space
+
+| Address Range                    | Description                          |
+|----------------------------------|--------------------------------------|
+| 0x00001000 - kConfig.memSize     | identity mapped kernel, read/write   |
+| 0x80000000 - 0xF0000000          | per-process, on-demand, user RW      |
+| 0xF0000000 - 0xF0001000          | shared between all user processes    |
+| kConfig.ioAPIC - ... + 0x1000    | identity mapped kernel, read/write   |
+| kConfig.localAPIC - ... + 0x1000 | identity mapped kernel, read/write   |
+| *everything else*                | no valid mapping                     |
 
 User code should not be able to access anything outside the user
 range (0x80000000 - 0xF0001000). Any attempt to do so should
